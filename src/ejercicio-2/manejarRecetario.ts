@@ -24,9 +24,9 @@ export class ManejarRecetario implements
   getAll(): Chef[] { return this.chefs; }
 
   /**
-   * 
-   * @param n 
-   * @returns 
+   * Metodo para buscar chefs, recetas o pasos por su nombre
+   * @param n - nombre de chefs, recetas o pasos a buscar
+   * @returns - array de chefs, recetas o pasos que coinciden con el nombre dado
    */
   searchByName(n: string): (Chef | Recetas | Paso)[] {
     const resultados: (Chef | Recetas | Paso)[] = [];
@@ -49,7 +49,11 @@ export class ManejarRecetario implements
     return resultados;
   }
 
-  // por etiquetas
+  /**
+   * Metodo para buscar pasos por sus etiquetas
+   * @param tag - etiqueta de los pasos a buscar
+   * @returns - array de pasos que coinciden con la etiqueta dada
+   */
   searchByTags(tag: string): Paso[] {
     const encontrado: Paso[] = [];
     this.chefs.forEach(el => {
@@ -62,7 +66,11 @@ export class ManejarRecetario implements
     return encontrado;
   }
 
-  // por opcionalidad
+  /**
+   * Metodo para buscar pasos por su opcionalidad
+   * @param opcional - booleano que indica si se buscan pasos opcionales o no opcionales
+   * @returns - array de pasos que coinciden con la opcionalidad dada
+   */
   searchByOptionality(opcional: boolean): Paso[] {
     const encontrado: Paso[] = [];
     this.chefs.forEach(el => {
@@ -75,7 +83,12 @@ export class ManejarRecetario implements
     return encontrado;
   }
 
-  // por rango
+  /**
+   * Metodo para buscar recetas por su año de publicación
+   * @param start -  año de inicio del rango de publicación de las recetas a buscar
+   * @param end - año de fin del rango de publicación de las recetas a buscar
+   * @returns - array de recetas que coinciden con el rango de años de publicación dado
+   */
   searchByYearRange(start: number, end: number): Recetas[] {
     const encontrado: Recetas[] = [];
     this.chefs.forEach(el => {
@@ -86,7 +99,11 @@ export class ManejarRecetario implements
     return encontrado;
   }
 
-  // seguidores
+  /**
+   * Metodo para buscar chefs por su número de seguidores
+   * @param min - número mínimo de seguidores de los chefs a buscar
+   * @returns - array de chefs que coinciden con el número mínimo de seguidores dado
+   */
   searchByMinFollowers(min: number): Chef[] {
     return this.chefs.filter(c => c.seguidores >= min);
   }

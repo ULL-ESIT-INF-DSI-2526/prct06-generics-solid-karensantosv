@@ -150,6 +150,21 @@ describe('Ejercicio 2 - Manejar Recetario', () => {
             expect(chef).toBeDefined();
             expect(chef?.nombre).toBe("Gordon Ramsay");
         });
+
+        test('debe buscar por opcionalidad y encontrar pasos', () => {
+            const resultados = manejador.searchByOptionality(true);
+            expect(resultados.length).toBe(1);
+            expect(resultados[0]).toBeInstanceOf(Paso);
+            expect(resultados[0].esOpcional).toBe(true);
+        });
+
+        test('debe buscar por rango de años y encontrar recetas', () => {
+            const resultados = manejador.searchByYearRange(2000, 2010);
+            expect(resultados.length).toBe(2);
+            expect(resultados[0]).toBeInstanceOf(Recetas);
+            expect(resultados[0].publicacion).toBeGreaterThanOrEqual(2000);
+            expect(resultados[0].publicacion).toBeLessThanOrEqual(2010);
+        });
     });
 
     describe('TablePresenter', () => {

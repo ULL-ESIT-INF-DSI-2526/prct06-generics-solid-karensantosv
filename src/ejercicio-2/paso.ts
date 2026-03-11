@@ -25,7 +25,19 @@ export class Paso {
 
 }
 
+/**
+ * Clase que representa un paso de cocina que requiere una temperatura especifica
+ */
 export class PasoConTemperatura extends Paso {
+  /**
+   * Constructor de la clase PasoConTemperatura
+   * @param nombre - Nombre del paso de la receta
+   * @param duracion - Duración del paso en segundos
+   * @param etiquetas - Array de etiquetas que describen el paso.
+   * @param opcional - Booleano que indica si el paso es opcional o no
+   * @param vecesCompletado - Número de veces que se ha completado el paso (inicialmente 0)
+   * @param temperatura - Temperatura requerida para completar el paso en grados Celsius
+   */
   constructor(nombre: string, duracion: number, etiquetas: string[], opcional: boolean, vecesCompletado: number, temperatura: number) {
     super(nombre, duracion, etiquetas, opcional, vecesCompletado);
     this.temperatura = temperatura;

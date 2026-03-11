@@ -1,88 +1,117 @@
-/**Ejercicio 1 - La academia Jedi
-Imagine que tiene que diseñar el modelo de datos de una plataforma de gestión de una base de datos galáctica para una academia Jedi. A través del archivo central se puede acceder a diferentes tipos de recursos del universo: maestros Jedi, naves espaciales y holocrones (artefactos que almacenan conocimiento).
-
-Defina una interfaz genérica GalacticRegistry<T> que especifique las propiedades y métodos con los que debería contar una colección concreta de entidades (por ejemplo, una colección de naves espaciales). También deberían definirse métodos de búsqueda que permitan obtener listados en función de distintos criterios:
-
-Por nombre.
-Por afiliación (República, Imperio, Sith, Independiente).
-Por nivel de poder / clase.
-Por año de construcción o formación.
-Por planeta de origen.
-Defina una clase abstracta genérica BasicGalacticCollection<T> que implemente dicha interfaz genérica.
-
-En esta clase podrá implementar la lógica común (almacenamiento interno, inserción, eliminación, búsqueda básica por nombre, etc.).
-Otros métodos más específicos deberán permanecer como abstractos, para obligar a que sean definidos en las subclases correspondientes.
-Extienda la clase abstracta anterior para obtener subclases que modelen cada uno de los tres tipos de colecciones:
-
-JediMasterCollection
-StarshipCollection
-HolocronCollection
-Aplique los principios SOLID, prestando especial atención al diseño de la interfaz GalacticRegistry<T>. Si considera que la interfaz resulta demasiado extensa o con responsabilidades heterogéneas, divídala en interfaces genéricas más pequeñas (por ejemplo, SearchByAffiliation<T>, SearchByOriginPlanet<T>, PowerLevelQueryable<T>, etc.), con el objetivo de cumplir el principio Interface Segregation. Sería deseable un diseño que favorezca la extensibilidad, permitiendo añadir en el futuro nuevas entidades (por ejemplo, droides o especies alienígenas) sin modificar las clases existentes. 
-*/
-
+/**
+ * Interface para una entidad galáctica
+ */
 export interface GalacticEntity {
   name: string;
   originPlanet: string;
 }
 
+/**
+ * Interface para un Jedi, con su afiliación, nivel de poder y año de formación
+ */
 export interface JediMaster extends GalacticEntity {
   affiliation: 'República' | 'Imperio' | 'Sith' | 'Independiente';
   powerLevel: number;
   yearOfFormation: number;
 }
 
+/**
+ * Interface para una nave espacial, con su afiliación y año de construcción
+ */
 export interface Starship extends GalacticEntity {
   affiliation: 'República' | 'Imperio' | 'Sith' | 'Independiente';
   yearOfConstruction: number;
 }
 
+/**
+ * Interface para un Holocrón, con su nivel de poder
+ */
 export interface Holocron extends GalacticEntity {
   powerLevel: number;
 }
 
-interface SearchByName<T> {
+/**
+ * Interfaces para búsqueda de entidades galácticas
+ */
+export interface SearchByName<T> {
   searchByName(name: string): T[];
 }
 
-interface SearchByAffiliation<T> {
+/**
+ * Interfaces para búsqueda por afiliación
+ */
+export interface SearchByAffiliation<T> {
   searchByAffiliation(affiliation: string): T[];
 }
 
-interface SearchByPowerLevel<T> {
+/**
+ * Interface para búsqueda por nivel de poder
+ */
+export interface SearchByPowerLevel<T> {
   searchByPowerLevel(powerLevel: number): T[];
 }
 
-interface SearchByYear<T> {
+/**
+ * Interface para búsqueda por año de formación o construcción
+ */
+export interface SearchByYear<T> {
   searchByYear(year: number): T[];
 }
 
-interface SearchByOriginPlanet<T> {
+/**
+ * Interface para búsqueda por planeta de origen
+ */
+export interface SearchByOriginPlanet<T> {
   searchByOriginPlanet(planet: string): T[];
 }
 
 /**
- * A aprte de saber añadir entidades y removerlas, extiende la interfaz de nusqeuda, para saber busacr por nombre
+ * Interface para el registro
+ * A aprte de saber añadir entidades y removerlas, extiende la interfaz de nusqeuda, para saber busacr por nombre y planeta
  */
-interface GalacticRegistry<T extends GalacticEntity> extends SearchByName<T>, SearchByOriginPlanet<T> {
+export interface GalacticRegistry<T extends GalacticEntity> extends SearchByName<T>, SearchByOriginPlanet<T> {
   add(item: T): void;
   remove(name: string): void;
 }
 
+/**
+ * Clase abstracta para una colección galáctica
+ */
 export abstract class BasicGalacticCollection<T extends GalacticEntity> implements GalacticRegistry<T> {
   protected entities: T[] = [];
 
+  /**
+   * Metodo para añadir una entidad a la colección
+   * @param entity - entidad a añadir
+   * @returns - void
+   */
   add(entity: T): void {
     this.entities.push(entity);
   }
 
+  /**
+   * Metodo para remover una entidad de la colección por su nombre
+   * @param name - nombre de la entidad a remover
+   * @returns - void
+   */
   remove(name: string): void {
     this.entities = this.entities.filter(entity => entity.name !== name);
   }
 
+  /**
+   * Metodo para buscar entidades por su nombre
+   * @param name - nombre de la entidad a buscar
+   * @returns - array de entidades que coinciden con el nombre dado
+   */
   searchByName(name: string): T[] {
     return this.entities.filter(entity => entity.name === name);
   }
 
+  /**
+   * Metodo para buscar entidades por su planeta de origen
+   * @param planet - planeta de origen de la entidad a buscar
+   * @returns - array de entidades que coinciden con el planeta de origen dado
+   */
   searchByOriginPlanet(planet: string): T[] {
     return this.entities.filter(entity => entity.originPlanet === planet);
   }
@@ -93,36 +122,74 @@ export abstract class BasicGalacticCollection<T extends GalacticEntity> implemen
 }
 
 
-
+/**
+ * Clase para manejar una coleccion de Jedi
+ */
 export class JediMasterCollection extends BasicGalacticCollection<JediMaster> implements SearchByAffiliation<JediMaster>, SearchByPowerLevel<JediMaster>, SearchByYear<JediMaster> {
+  
+  /**
+   * Método para buscar Jedi por su afiliación
+   * @param affiliation - afiliación de los Jedi a buscar
+   * @returns - array de Jedi que coinciden con la afiliación dada
+   */
   searchByAffiliation(affiliation: string): JediMaster[] {
     return this.entities.filter(jedi => jedi.affiliation === affiliation);
   }
 
+  /**
+   * Método para buscar Jedi por su nivel de poder
+   * @param powerLevel - nivel de poder de los Jedi a buscar
+   * @returns - array de Jedi que coinciden con el nivel de poder dado
+   */
   searchByPowerLevel(powerLevel: number): JediMaster[] {
     return this.entities.filter(jedi => jedi.powerLevel === powerLevel);
   }
 
+  /**
+   * Método para buscar Jedi por su año de formación
+   * @param year -  año de formación de los Jedi a buscar
+   * @returns - array de Jedi que coinciden con el año de formación dado
+   */
   searchByYear(year: number): JediMaster[] {
     return this.entities.filter(jedi => jedi.yearOfFormation === year);
   }
 }
 
 
-
+/**
+ * Clase para manejar una coleccion de naves espaciales
+ */
 export class StarshipCollection extends BasicGalacticCollection<Starship> implements SearchByAffiliation<Starship>, SearchByYear<Starship> {
+  
+  /**
+   * Método para buscar naves espaciales por su afiliación
+   * @param affiliation - afiliación de las naves espaciales a buscar
+   * @returns -  array de naves espaciales que coinciden con la afiliación dada
+   */
   searchByAffiliation(affiliation: string): Starship[] {
     return this.entities.filter(starship => starship.affiliation === affiliation);
   }
 
+  /**
+   * Método para buscar naves espaciales por su año de construcción
+   * @param year - año de construcción de las naves espaciales a buscar
+   * @returns - array de naves espaciales que coinciden con el año de construcción dado
+   */
   searchByYear(year: number): Starship[] {
     return this.entities.filter(starship => starship.yearOfConstruction === year);
   }
 }
 
 
-
+/**
+ * Clase para manejar una coleccion de Holocrones
+ */
 export class HolocronCollection extends BasicGalacticCollection<Holocron> implements SearchByPowerLevel<Holocron> {
+  /**
+   * Metodo para buscar Holocrones por su nivel de poder
+   * @param powerLevel - nivel de poder de los Holocrones a buscar
+   * @returns - array de Holocrones que coinciden con el nivel de poder dado
+   */
   searchByPowerLevel(powerLevel: number): Holocron[] {
     return this.entities.filter(holocron => holocron.powerLevel === powerLevel);
   }
